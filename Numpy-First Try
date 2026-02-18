@@ -1,0 +1,30 @@
+import numpy as np
+# Rows: New York, London, Wakanda
+# Columns: Mark 42, Mark 45, Mark 50, Mark 85
+suit_data = np.array([
+    [85, 10, 999, 92],   # New York Base (999 is a sensor error)
+    [-5, 40, 55, 0],     # London Base (-5 is impossible, 0 is depleted)
+    [110, 120, 88, 999]  # Wakanda Base (110/120 are overcharged)
+])
+
+suit_data_1D = suit_data.reshape(1,12)
+hack_removal = suit_data_1D[suit_data_1D == 999] = 50
+glitch_correction = suit_data_1D[suit_data_1D < 0] = 0
+power_boost = suit_data_1D[suit_data_1D < 100] = suit_data_1D * 1.15
+
+average_power_per_base = np.mean(suit_data_1D, axis = 1)
+max_power = max(average_power_per_base)
+
+def find_strongest_base(max_power, average_power_per_base):
+
+    if average_power_per_base.index(max_power) == 0:
+        return "New York Base"
+    elif average_power_per_base.index(max_power) == 1:
+        return "London Base"
+    else:
+        return "Wakanda Base"
+
+ready_for_action_mask = (suit_data_1D > 70) & (suit_data_1D < 100)
+ready_for_action = suit_data_1D[ready_for_action_mask]
+
+print(f"The strongest base is {find_strongest_base(max_power, average_power_per_base)}")
